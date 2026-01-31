@@ -1,0 +1,31 @@
+{
+  "name": "globe-3d-render",
+  "version": "1.0.0",
+  "description": "An open-source, interactive 3D globe visualization template with country information cards",
+  "main": "src/index.html",
+  "keywords": [
+    "globe",
+    "3d",
+    "visualization",
+    "d3js",
+    "topojson",
+    "interactive",
+    "map",
+    "countries",
+    "open-source"
+  ],
+  "author": "Globe 3D Render",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/globe-3d-render"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/globe-3d-render/issues"
+  },
+  "homepage": "https://github.com/yourusername/globe-3d-render#readme",
+  "scripts": {
+    "start": "npx http-server src -p 8080 -o",
+    "serve": "npx live-server src --port=8080"
+  }
+}

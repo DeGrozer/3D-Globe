@@ -1,0 +1,37 @@
+﻿*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#000;color:#fff;display:flex}
+.about-btn{position:fixed;top:20px;right:20px;padding:10px 20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:14px;cursor:pointer;z-index:100;transition:all 0.2s;backdrop-filter:blur(10px)}
+.about-btn:hover{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.4)}
+.globe-section{flex:1;height:100%;position:relative;display:flex;align-items:center;justify-content:center}
+#globe-canvas{width:100%;height:100%;cursor:grab}
+#globe-canvas:active{cursor:grabbing}
+.loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:50}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:rgba(255,255,255,0.6);font-size:14px}
+.tooltip{position:fixed;padding:8px 12px;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.2);border-radius:4px;font-size:13px;color:#fff;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:1000}
+.tooltip.visible{opacity:1}
+.side-panel{width:360px;height:100%;background:linear-gradient(180deg,#0d0d0d 0%,#0a0a0a 100%);border-right:1px solid rgba(255,255,255,0.08);position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);z-index:500;overflow-y:auto;box-shadow:4px 0 20px rgba(0,0,0,0.5)}
+.side-panel.visible{transform:translateX(0)}
+.panel-close{position:absolute;top:15px;right:15px;width:32px;height:32px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10}
+.panel-close:hover{background:rgba(255,255,255,0.2)}
+.panel-header{padding:30px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.flag-wrapper{width:100px;height:67px;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.4);margin-bottom:16px}
+.flag-wrapper img{width:100%;height:100%;object-fit:cover}
+.panel-header h1{font-size:28px;font-weight:600;margin-bottom:6px;color:#fff}
+.region-text{font-size:14px;color:rgba(255,255,255,0.5)}
+.panel-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.1);border-bottom:1px solid rgba(255,255,255,0.1)}
+.stat-box{background:#0a0a0a;padding:18px 12px;text-align:center}
+.stat-value{display:block;font-size:18px;font-weight:600;color:#fff;margin-bottom:4px}
+.stat-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px}
+.panel-details{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.detail-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.detail-row:last-child{border-bottom:none}
+.detail-label{color:rgba(255,255,255,0.5);font-size:14px}
+.detail-value{color:#fff;font-size:14px;font-weight:500}
+.panel-description{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.panel-description p{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.75)}
+.panel-footer{padding:20px 24px}
+.wiki-link{display:inline-flex;align-items:center;gap:6px;color:#6ba3ff;text-decoration:none;font-size:14px;transition:color 0.2s}
+.wiki-link:hover{color:#8fb8ff;text-decoration:underline}

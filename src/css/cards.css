@@ -1,0 +1,196 @@
+/* ============================================
+   CARD STYLES - Globe 3D Render
+   ============================================ */
+
+.info-card {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    border-color: rgba(74, 158, 255, 0.5);
+    box-shadow: 0 12px 40px rgba(74, 158, 255, 0.15);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.flag-container {
+    width: 70px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.flag-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.flag-container img.visible {
+    display: block;
+}
+
+.flag-container::before {
+    content: '🌍';
+    font-size: 24px;
+}
+
+.flag-container:has(img.visible)::before {
+    display: none;
+}
+
+.country-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.country-info h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.country-info .region {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+}
+
+/* Stats Row */
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    background: rgba(74, 158, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Details Section */
+.details-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.details-section h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.details-list {
+    list-style: none;
+}
+
+.details-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.details-list li:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.details-list li span:last-child {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Card Active State */
+.info-card.active {
+    border-color: var(--accent-color);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .info-card {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        width: 100%;
+        max-width: 400px;
+        margin: 10px auto;
+        order: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-card {
+        width: calc(100% - 20px);
+        margin: 10px;
+        padding: 16px;
+    }
+    
+    .stats-row {
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        flex: 1 1 calc(50% - 6px);
+    }
+}

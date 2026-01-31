@@ -1,0 +1,14 @@
+﻿.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:all 0.3s}
+.modal-overlay.visible{opacity:1;visibility:visible}
+.modal{background:#0a0a0a;border:1px solid rgba(255,255,255,0.15);border-radius:12px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;transform:translateY(20px);transition:transform 0.3s}
+.modal-overlay.visible .modal{transform:translateY(0)}
+.modal-close{position:absolute;top:15px;right:15px;width:32px;height:32px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;z-index:10}
+.modal-close:hover{background:rgba(255,255,255,0.2)}
+.about-modal{padding:30px}
+.about-modal h2{font-size:22px;margin-bottom:15px;color:#fff}
+.about-modal h3{font-size:14px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px}
+.about-modal p{font-size:14px;line-height:1.6;color:rgba(255,255,255,0.7)}
+.about-modal ul{list-style:none;padding:0}
+.about-modal ul li{font-size:14px;color:rgba(255,255,255,0.7);padding:6px 0;padding-left:20px;position:relative}
+.about-modal ul li::before{content:'';position:absolute;left:0;color:rgba(255,255,255,0.3)}
+.about-modal .version{margin-top:25px;font-size:12px;color:rgba(255,255,255,0.3)}
