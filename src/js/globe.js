@@ -6,11 +6,11 @@
         this.renderer = null;
         this.controls = null;
         this.globe = null;
-        this.marker = null;
-        this.markerRing = null;
+        this.highlight = null;
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.selectedCountry = null;
+        this.isAnimating = false;
         this.init();
     }
 
@@ -28,9 +28,10 @@
 
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-        this.controls.minDistance = 1.2;
-        this.controls.maxDistance = 3;
+        this.controls.dampingFactor = 0.08;
+        this.controls.rotateSpeed = 0.5;
+        this.controls.minDistance = 1.5;
+        this.controls.maxDistance = 4;
         this.controls.autoRotate = true;
         this.controls.autoRotateSpeed = 0.3;
         this.controls.enablePan = false;
@@ -47,7 +48,7 @@
         this.scene.add(backLight);
 
         this.createGlobe();
-        this.createMarker();
+        this.createHighlight();
         this.addEventListeners();
         this.animate();
     }
@@ -75,18 +76,18 @@
         this.scene.add(this.globe);
     }
 
-    createMarker() {
-        const ringGeometry = new THREE.RingGeometry(0.06, 0.08, 32);
-        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-        this.markerRing = new THREE.Mesh(ringGeometry, ringMaterial);
-        this.markerRing.visible = false;
-        this.scene.add(this.markerRing);
-
-        const dotGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-        const dotMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 });
-        this.marker = new THREE.Mesh(dotGeometry, dotMaterial);
-        this.marker.visible = false;
-        this.scene.add(this.marker);
+    createHighlight() {
+        // Subtle glow ring for selected country
+        const geometry = new THREE.RingGeometry(0.03, 0.05, 32);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.8
+        });
+        this.highlight = new THREE.Mesh(geometry, material);
+        this.highlight.visible = false;
+        this.scene.add(this.highlight);
     }
 
     addEventListeners() {
@@ -139,15 +140,29 @@
     }
 
     getCountryFromPoint(point) {
-        const lat = 90 - (Math.acos(point.y / CONFIG.globe.radius)) * 180 / Math.PI;
-        const lon = ((270 + (Math.atan2(point.x, point.z)) * 180 / Math.PI) % 360) - 180;
+        // Convert 3D point to lat/lon - must match the inverse of showHighlight formula
+        const r = CONFIG.globe.radius;
+        
+        // Reverse of: y = r * cos(phi) where phi = (90 - lat) in radians
+        const phi = Math.acos(point.y / r);
+        const lat = 90 - phi * (180 / Math.PI);
+        
+        // Reverse of: x = -r * sin(phi) * cos(theta), z = r * sin(phi) * sin(theta)
+        // where theta = (lon + 180) in radians
+        const theta = Math.atan2(point.z, -point.x);
+        const lon = theta * (180 / Math.PI) - 180;
 
         let closest = null;
         let minDist = Infinity;
 
         for (const [code, coords] of Object.entries(COUNTRY_COORDS)) {
-            const dist = Math.sqrt(Math.pow(lat - coords.lat, 2) + Math.pow(lon - coords.lon, 2));
-            if (dist < minDist && dist < 20) {
+            const dLat = lat - coords.lat;
+            let dLon = lon - coords.lon;
+            // Handle wraparound for longitude
+            if (dLon > 180) dLon -= 360;
+            if (dLon < -180) dLon += 360;
+            const dist = Math.sqrt(dLat * dLat + dLon * dLon);
+            if (dist < minDist && dist < 15) {
                 minDist = dist;
                 closest = { code, name: COUNTRY_NAMES[code] };
             }
@@ -156,39 +171,39 @@
     }
 
     selectCountry(code, name, clickPoint) {
+        if (this.isAnimating) return;
         this.selectedCountry = code;
         this.controls.autoRotate = false;
 
         const coords = COUNTRY_COORDS[code];
         if (coords) {
-            this.showMarker(coords.lat, coords.lon);
-            this.rotateToCountry(coords.lat, coords.lon);
+            this.showHighlight(coords.lat, coords.lon);
+            this.smoothPanToCountry(coords.lat, coords.lon);
         }
 
         Panel.showCountry(code, name);
     }
 
-    showMarker(lat, lon) {
+    showHighlight(lat, lon) {
         const phi = (90 - lat) * (Math.PI / 180);
         const theta = (lon + 180) * (Math.PI / 180);
-        const r = CONFIG.globe.radius + 0.01;
+        const r = CONFIG.globe.radius + 0.005;
 
         const x = -r * Math.sin(phi) * Math.cos(theta);
         const y = r * Math.cos(phi);
         const z = r * Math.sin(phi) * Math.sin(theta);
 
-        this.marker.position.set(x, y, z);
-        this.marker.visible = true;
-
-        this.markerRing.position.set(x, y, z);
-        this.markerRing.lookAt(0, 0, 0);
-        this.markerRing.visible = true;
+        this.highlight.position.set(x, y, z);
+        this.highlight.lookAt(0, 0, 0);
+        this.highlight.visible = true;
     }
 
-    rotateToCountry(lat, lon) {
+    smoothPanToCountry(lat, lon) {
+        this.isAnimating = true;
+        
         const phi = (90 - lat) * (Math.PI / 180);
         const theta = (lon + 180) * (Math.PI / 180);
-        const dist = CONFIG.globe.camera.distance;
+        const dist = this.camera.position.length(); // Keep current zoom level
 
         const targetPos = new THREE.Vector3(
             -dist * Math.sin(phi) * Math.cos(theta),
@@ -197,19 +212,25 @@
         );
 
         const startPos = this.camera.position.clone();
-        const duration = 1000;
+        const duration = 1500; // Slower, smoother
         const startTime = Date.now();
 
         const animateCamera = () => {
             const elapsed = Date.now() - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
+            
+            // Smooth ease-in-out curve
+            const eased = progress < 0.5
+                ? 4 * progress * progress * progress
+                : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
             this.camera.position.lerpVectors(startPos, targetPos, eased);
             this.camera.lookAt(0, 0, 0);
 
             if (progress < 1) {
                 requestAnimationFrame(animateCamera);
+            } else {
+                this.isAnimating = false;
             }
         };
         animateCamera();
@@ -218,14 +239,15 @@
     clearSelection() {
         this.selectedCountry = null;
         this.controls.autoRotate = true;
-        this.marker.visible = false;
-        this.markerRing.visible = false;
+        this.highlight.visible = false;
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
-        if (this.markerRing && this.markerRing.visible) {
-            this.markerRing.rotation.z += 0.02;
+        if (this.highlight && this.highlight.visible) {
+            // Subtle pulse effect
+            const scale = 1 + Math.sin(Date.now() * 0.003) * 0.1;
+            this.highlight.scale.set(scale, scale, scale);
         }
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
