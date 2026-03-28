@@ -12,3 +12,22 @@
 .about-modal ul li{font-size:14px;color:rgba(255,255,255,0.7);padding:6px 0;padding-left:20px;position:relative}
 .about-modal ul li::before{content:'';position:absolute;left:0;color:rgba(255,255,255,0.3)}
 .about-modal .version{margin-top:25px;font-size:12px;color:rgba(255,255,255,0.3)}
+
+@media (max-width: 768px){
+.modal-overlay{padding:16px 10px;align-items:flex-end}
+.modal{width:100%;max-width:none;max-height:86vh;border-radius:14px 14px 0 0;transform:translateY(32px)}
+.modal-close{top:10px;right:10px;width:30px;height:30px;font-size:18px}
+.about-modal{padding:22px 16px 18px}
+.about-modal h2{font-size:20px;margin-bottom:12px;padding-right:34px}
+.about-modal h3{font-size:12px;margin:16px 0 8px}
+.about-modal p,.about-modal ul li{font-size:13px;line-height:1.5}
+}
+
+@media (max-width: 420px){
+.modal-overlay{padding:10px 6px}
+.modal{max-height:90vh}
+.about-modal{padding:20px 14px 14px}
+.about-modal h2{font-size:18px}
+.about-modal p,.about-modal ul li{font-size:12px}
+.about-modal .version{margin-top:16px;font-size:11px}
+}

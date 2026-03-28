@@ -1,4 +1,4 @@
-#  Globe 3D Render [WIP]
+#  Globe 3D Render
 
 A beautiful, interactive 3D globe visualization built with **Three.js**. Features realistic Earth textures, atmospheric glow, and smooth WebGL rendering. Perfect for displaying country data, statistics, or any geographical information.
 
